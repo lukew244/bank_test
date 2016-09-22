@@ -1,7 +1,9 @@
 require 'bank'
 
 describe Bank do
-  subject(:bank) {described_class.new}
+  subject(:bank) {described_class.new(transaction)}
+  let(:transaction) {double :transaction, :add => 0}
+
 
   describe 'menu' do
     it 'contains a list of items' do
@@ -20,6 +22,12 @@ describe Bank do
   end
 
   describe 'account actions' do
+    it 'passes on user transactions' do
+      allow(STDIN).to receive(:gets).and_return("detail")
+      expect(transaction).to receive(:add).with(["detail", "detail", "deposit"])
+      bank.process_choice("Deposit")
+    end
+
     it 'user can view their balance' do
       expect { bank.display_balance }.to output(/Balance: 0/).to_stdout
 

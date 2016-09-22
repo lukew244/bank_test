@@ -1,10 +1,13 @@
+require_relative 'transaction'
+
 class Bank
 
   attr_reader :menu, :balance
 
-  def initialize
-    @menu = ["Withdraw", "Deposit", "Balance", "Exit"]
+  def initialize(transaction = Transaction.new)
+    @menu = ["Withdraw", "Deposit", "Balance", "Print", "Exit"]
     @balance = 0
+    @transaction = transaction
     # load_menu
   end
 
@@ -25,16 +28,28 @@ class Bank
   def process_choice(selection)
     case selection
     when "Withdraw"
-
+      user_input = get_transaction("withdraw")
+      @transaction.add(user_input)
     when "Deposit"
-      deposit
+      user_input = get_transaction("deposit")
+      @transaction.add(user_input)
     when "Balance"
       display_balance
+    when "print"
+      puts @transaction.list
     when "Exit"
       exit
     else
       puts "Command not recognised, please re-enter:"
     end
+  end
+
+  def get_transaction(transaction_type)
+    puts "Date:"
+    date = STDIN.gets.chomp
+    puts "Amount:"
+    amount = STDIN.gets.chomp
+    return [date, amount, transaction_type]
   end
 
   def display_balance
